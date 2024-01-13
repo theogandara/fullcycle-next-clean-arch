@@ -28,4 +28,8 @@ export class Product {
   get category(): string {
     return this.product.category;
   }
+
+  toJSON(): ProductType {
+    return this.product;
+  }
 }
