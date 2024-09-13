@@ -1,48 +1,73 @@
-import { createContext, PropsWithChildren, useState } from "react";
-import { Product } from "../utils/model";
+import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import { Cart } from "../@core/domain/entities/cart";
+import { container, Registry } from "../@core/infra/container-registry";
+import { AddProductInCart } from "../@core/application/cart/add-product-in-cart.use-case";
+import { Product } from "../@core/domain/entities/product";
+import { RemoveProductFromCart } from "../@core/application/cart/remove-product-from-cart.use-case";
+import { ClearCart } from "../@core/application/cart/clear-cart.use-case";
+import { GetCart } from "../@core/application/cart/get-cart.use-case";
 
 export type CartContextType = {
-  products: Product[];
+  cart: Cart;
   addProduct: (product: Product) => void;
-  removeProduct: (product: Product) => void;
+  removeProduct: (id: string) => void;
+  reload: () => void;
   clear: () => void;
-  total: number;
 };
 
 const defaultContext: CartContextType = {
-  products: [],
-  addProduct: () => {},
-  removeProduct: () => {},
+  cart: new Cart({ products: [] }),
+  addProduct: (product: Product) => {},
+  removeProduct: (id: string) => {},
+  reload: () => {},
   clear: () => {},
-  total: 0,
 };
 
 export const CartContext = createContext(defaultContext);
+
+const addProductUseCase = container.get<AddProductInCart>(
+  Registry.AddProductInCartUseCase
+);
+
+const removeProductFromCartUseCase = container.get<RemoveProductFromCart>(
+  Registry.RemoveProductFromCartUseCase
+);
+
+const ClearCartUseCase = container.get<ClearCart>(Registry.ClearCartUseCase);
+const GetCartUseCase = container.get<GetCart>(Registry.GetCartUseCase);
+
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const [cart, setCart] = useState<Cart>(defaultContext.cart);
+
   const addProduct = (newProduct: Product) => {
-    if (products === null) return setProducts([newProduct]);
-    setProducts((prevState) => [...prevState!, newProduct]);
+    const newCart = addProductUseCase.execute(newProduct);
+    setCart(newCart);
   };
 
-  const removeProduct = (productToBeDeleted: Product) => {
-    if (products === null) return;
-
-    setProducts((prevState) =>
-      prevState!.filter((prd) => prd.id !== productToBeDeleted.id)
-    );
+  const removeProduct = (productId: string) => {
+    const newCart = removeProductFromCartUseCase.execute(productId);
+    setCart(newCart);
   };
+
   const clear = () => {
-    setProducts([]);
+    const newCart = ClearCartUseCase.execute();
+    setCart(newCart);
   };
 
-  const total = products!?.reduce((acc, product) => acc + product.price, 0);
+  const reload = async () => {
+    const newCart = await GetCartUseCase.execute();
+    setCart(newCart);
+  };
+
+  useEffect(() => {
+    reload();
+  }, []);
 
   return (
     <CartContext.Provider
       value={{
-        products: products || [],
-        total,
+        cart,
+        reload,
         addProduct,
         removeProduct,
         clear,
