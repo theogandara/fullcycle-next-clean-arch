@@ -1,35 +1,23 @@
-type ProductType = {
-  price: number;
+export type ProductProps = {
+  id: string;
   name: string;
   description: string;
-  image: string;
-  id: string;
-  category: string;
+  price: number;
 };
 
 export class Product {
-  constructor(public product: ProductType) {}
+  constructor(public props: ProductProps) {}
 
-  get price(): number {
-    return this.product.price;
+  get id() {
+    return this.props.id;
   }
-  get name(): string {
-    return this.product.name;
+  get name() {
+    return this.props.name;
   }
-  get description(): string {
-    return this.product.description;
+  get description() {
+    return this.props.description;
   }
-  get image(): string {
-    return this.product.image;
-  }
-  get id(): string {
-    return this.product.id;
-  }
-  get category(): string {
-    return this.product.category;
-  }
-
-  toJSON(): ProductType {
-    return this.product;
+  get price() {
+    return this.props.price;
   }
 }
