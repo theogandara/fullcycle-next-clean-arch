@@ -1,25 +1,29 @@
 {
-  "name": "fullcycle-clean-arch-frontend",
+  "name": "my-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fake-api": "json-server --port 8000 --watch fake-api.json"
   },
   "dependencies": {
     "axios": "^1.1.2",
-    "next": "12.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "inversify": "^6.0.1",
+    "next": "14.2.10",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
-    "@types/node": "18.11.0",
-    "@types/react": "18.0.21",
-    "@types/react-dom": "18.0.6",
-    "eslint": "8.25.0",
-    "eslint-config-next": "12.3.1",
-    "typescript": "4.8.4"
+    "@types/node": "22.5.4",
+    "@types/react": "18.3.5",
+    "@types/react-dom": "18.3.0",
+    "eslint": "9.10.0",
+    "eslint-config-next": "14.2.10",
+    "json-server": "^1.0.0-beta.2",
+    "typescript": "5.6.2"
   }
 }
