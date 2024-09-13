@@ -20,4 +20,13 @@ export class Product {
   get price() {
     return this.props.price;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      price: this.price,
+    };
+  }
 }
