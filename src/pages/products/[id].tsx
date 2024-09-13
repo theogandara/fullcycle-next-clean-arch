@@ -1,8 +1,9 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { http } from "../../utils/http";
-import { Product } from "../../utils/model";
 import { CartContext } from "../../context/cart.provider";
 import { useContext } from "react";
+import { container, Registry } from "../../@core/infra/container-registry";
+import { GetProduct } from "../../@core/application/product/get-product.use-case";
+import { Product } from "../../@core/domain/entities/product";
 
 type ProductDetailPageProps = {
   product: Product;
@@ -32,6 +33,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { id } = ctx.params || {};
-  const { data: product } = await http.get(`/products/${id}`);
+  const getProductUseCase = container.get<GetProduct>(
+    Registry.GetProductUseCase
+  );
+  const product = await getProductUseCase.execute(String(id));
+
   return { props: { product } };
 };

@@ -1,6 +1,11 @@
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { http } from "../../../utils/http";
-import { Order } from "../../../utils/model";
+import { http } from "../../../@core/infra/http";
+
+type Order = {
+  products: any[];
+  credit_card_number: string;
+  id: string;
+};
 
 type CheckoutSuccessPageProps = {
   order: Order;
@@ -37,9 +42,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const { id } = ctx.params || {};
-
   const { data: order } = await http.get(`/orders/${id}`);
-
   return {
     props: {
       order,
